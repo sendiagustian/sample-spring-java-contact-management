@@ -20,6 +20,7 @@ public class ServerProperties {
     @Getter
     @Setter
     public static class Local {
+        private String address;
         private String host;
         private String port;
     }
@@ -27,6 +28,7 @@ public class ServerProperties {
     @Getter
     @Setter
     public static class Dev {
+        private String address;
         private String host;
         private String port;
     }
@@ -34,6 +36,7 @@ public class ServerProperties {
     @Getter
     @Setter
     public static class Prod {
+        private String address;
         private String host;
         private String port;
     }

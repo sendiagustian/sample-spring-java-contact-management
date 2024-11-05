@@ -10,8 +10,9 @@ import lombok.Setter;
 @ConfigurationProperties("application")
 public class AppProperties {
 
-    private String name;
     private String version;
+    private String name;
+    private String desc;
     private Contact contact;
 
     @Getter

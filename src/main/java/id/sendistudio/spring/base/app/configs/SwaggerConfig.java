@@ -1,39 +1,63 @@
 package id.sendistudio.spring.base.app.configs;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 
+import id.sendistudio.spring.base.app.configs.properties.AppProperties;
+import id.sendistudio.spring.base.app.configs.properties.ServerProperties;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
+import io.swagger.v3.oas.models.servers.Server;
 
 @Configuration
 public class SwaggerConfig {
+
+        @Autowired
+        Environment env;
+
+        @Autowired
+        AppProperties appProperties;
+
+        @Autowired
+        ServerProperties serverProperties;
+
         @Bean
         OpenAPI customOpenAPI() {
 
-                // Server devServer = new Server();
-                // devServer.setUrl(devUrl);
-                // devServer.setDescription("Server URL in Development environment");
+                String activeProfile = env.getActiveProfiles().length > 0 ? env.getActiveProfiles()[0] : "local";
+                String allowedHost;
 
-                // Server prodServer = new Server();
-                // prodServer.setUrl(prodUrl);
-                // prodServer.setDescription("Server URL in Production environment");
+                if ("dev".equals(activeProfile)) {
+                        allowedHost = serverProperties.getDev().getHost();
+                } else if ("prod".equals(activeProfile)) {
+                        allowedHost = serverProperties.getProd().getHost();
+                } else {
+                        allowedHost = serverProperties.getLocal().getHost() + ":"
+                                        + serverProperties.getLocal().getPort();
+                }
+
+                Server server = new Server();
+                server.setUrl(allowedHost);
 
                 Contact contact = new Contact();
-                contact.setEmail("sendiagustian@sendistudio.id");
-                contact.setName("Sendi Agustian");
+                contact.setEmail(appProperties.getContact().getEmail());
+                contact.setName(appProperties.getContact().getName());
 
                 License mitLicense = new License().name("MIT License").url("https://choosealicense.com/licenses/mit/");
 
                 Info info = new Info()
-                                .title("Base Spring Boot API")
-                                .version("v1.0.0")
+                                .title(appProperties.getName())
+                                .version(appProperties.getVersion())
                                 .contact(contact)
-                                .description("API documentation for API Base Spring Boot")
+                                .description(appProperties.getDesc())
                                 .license(mitLicense);
 
-                return new OpenAPI().info(info);
+                return new OpenAPI().info(info).servers(List.of(server));
         }
 }

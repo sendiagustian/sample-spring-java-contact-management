@@ -27,21 +27,21 @@ public class ServerConfig implements WebServerFactoryCustomizer<ConfigurableWebS
         if ("dev".equals(activeProfile)) {
             try {
                 factory.setPort(Integer.parseInt(server.getDev().getPort()));
-                factory.setAddress(InetAddress.getByName(server.getDev().getHost()));
+                factory.setAddress(InetAddress.getByName(server.getDev().getAddress()));
             } catch (UnknownHostException e) {
                 e.printStackTrace();
             }
         } else if ("prod".equals(activeProfile)) {
             try {
                 factory.setPort(Integer.parseInt(server.getProd().getPort()));
-                factory.setAddress(InetAddress.getByName(server.getProd().getHost()));
+                factory.setAddress(InetAddress.getByName(server.getProd().getAddress()));
             } catch (UnknownHostException e) {
                 e.printStackTrace();
             }
         } else {
             try {
                 factory.setPort(Integer.parseInt(server.getLocal().getPort()));
-                factory.setAddress(InetAddress.getByName(server.getLocal().getHost()));
+                factory.setAddress(InetAddress.getByName(server.getLocal().getAddress()));
             } catch (UnknownHostException e) {
                 e.printStackTrace();
             }
