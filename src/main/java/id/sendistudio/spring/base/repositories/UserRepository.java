@@ -2,6 +2,7 @@ package id.sendistudio.spring.base.repositories;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -35,8 +36,7 @@ public class UserRepository {
     public String getPasswordByUsername(String username) {
         String sql = "SELECT password FROM tbUsers WHERE username = ?";
         TypeUtil.StringRowMapper stringRowMapper = new TypeUtil.StringRowMapper("password");
-        var data = query.queryForObject(sql, stringRowMapper, username);
-        return data;
+        return query.queryForObject(sql, stringRowMapper, username).orElse(null);
     }
 
     public List<UserView> getAll() {
@@ -46,19 +46,24 @@ public class UserRepository {
 
     public UserView getByUsername(String username) {
         String sql = "SELECT * FROM tbUsers WHERE username = ?";
-        return query.queryForObject(sql, new UserView.UserViewRowMapper(), username);
+        return query.queryForObject(sql, new UserView.UserViewRowMapper(), username).orElse(null);
     }
 
-    public Boolean updateToken(String username, String token, Date tokenExpiredAt) {
-        String sql = "UPDATE tbUsers SET token = ?, tokenExpiredAt = ? WHERE username = ?";
-        Long timestamLong = tokenExpiredAt == null ? null : tokenExpiredAt.getTime();
-        int response = query.exec(sql, token, timestamLong, username);
+    public UserView getByToken(String token) {
+        String sql = "SELECT * FROM tbUsers WHERE token = ?";
+        return query.queryForObject(sql, new UserView.UserViewRowMapper(), token).orElse(null);
+    }
+
+    public Boolean updateToken(String username, String token, Optional<Date> tokenExpiredAt) {
+        String sql = "UPDATE tbUsers SET token = ? WHERE username = ?";
+        int response = query.exec(sql, token, username);
         return response > 0;
     }
 
-    public Boolean updateData(UpdateUserRequest request) {
+    public Boolean updateData(String username, UpdateUserRequest request) {
         String sql = "UPDATE tbUsers SET name = ? WHERE username = ?";
-        int response = query.exec(sql, request.getName(), request.getUsername());
+
+        int response = query.exec(sql, request.getName(), username);
         return response > 0;
     }
 

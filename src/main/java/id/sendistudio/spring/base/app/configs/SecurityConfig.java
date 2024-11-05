@@ -1,5 +1,6 @@
 package id.sendistudio.spring.base.app.configs;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -15,11 +16,9 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
-import id.sendistudio.spring.base.app.middlewares.FilterRequestMiddleware;
 import id.sendistudio.spring.base.constants.ExcludeEndpoint;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -33,9 +32,6 @@ public class SecurityConfig {
     @Autowired
     ExcludeEndpoint excludeEndpoint;
 
-    @Autowired
-    FilterRequestMiddleware interceptorMiddleware;
-
     @Bean
     PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -46,15 +42,21 @@ public class SecurityConfig {
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         http.authorizeHttpRequests(auth -> {
-            List<String> excludes = excludeEndpoint.getExcludes();
-            String[] excludesData = excludes.toArray(new String[0]);
+            List<String> tokenExcludes = excludeEndpoint.getTokenExcludes();
+            List<String> logExcludes = excludeEndpoint.getLogExcludes();
+
+            List<String> allExcludes = new ArrayList<>();
+            allExcludes.addAll(tokenExcludes);
+            allExcludes.addAll(logExcludes);
+
+            String[] excludesData = allExcludes.toArray(new String[0]);
 
             auth.requestMatchers(HttpMethod.GET, excludesData).permitAll();
             auth.requestMatchers(HttpMethod.POST, excludesData).permitAll();
             auth.requestMatchers(HttpMethod.PUT, excludesData).permitAll();
             auth.requestMatchers(HttpMethod.DELETE, excludesData).permitAll();
 
-            auth.anyRequest().authenticated();
+            auth.anyRequest().permitAll();
         });
 
         http.csrf(csrf -> csrf.disable());
@@ -69,25 +71,21 @@ public class SecurityConfig {
             });
         });
 
-        http.addFilterBefore(interceptorMiddleware, UsernamePasswordAuthenticationFilter.class);
-
         return http.build();
     }
 
     @Bean
     CorsConfigurationSource configurationSource() {
-
         return new CorsConfigurationSource() {
-
             @Override
             public CorsConfiguration getCorsConfiguration(@NonNull HttpServletRequest arg0) {
-                CorsConfiguration cfg = new CorsConfiguration();
+                CorsConfiguration configuration = new CorsConfiguration();
 
-                cfg.setAllowedOrigins(Arrays.asList("*"));
-                cfg.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
-                cfg.setAllowedHeaders(List.of("*"));
+                configuration.setAllowedOrigins(Arrays.asList("*"));
+                configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
+                configuration.setAllowedHeaders(List.of("*"));
 
-                return cfg;
+                return configuration;
             }
 
         };

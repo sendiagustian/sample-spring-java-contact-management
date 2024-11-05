@@ -1,4 +1,4 @@
-package id.sendistudio.spring.base.data.models;
+package id.sendistudio.spring.base.data.views;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -14,11 +14,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ContactModel {
+public class ContactView {
 
     private String uid;
-
-    private String username;
 
     private String fistName;
 
@@ -32,13 +30,12 @@ public class ContactModel {
 
     private Date updatedAt;
 
-    public static class ContactRowMapper implements RowMapper<ContactModel> {
+    public static class ContactRowMapper implements RowMapper<ContactView> {
 
         @Override
-        public ContactModel mapRow(@NonNull ResultSet rs, int rowNum) throws SQLException {
-            ContactModel contact = new ContactModel();
+        public ContactView mapRow(@NonNull ResultSet rs, int rowNum) throws SQLException {
+            ContactView contact = new ContactView();
             contact.setUid(rs.getString("uid"));
-            contact.setUsername(rs.getString("username"));
             contact.setFistName(rs.getString("firstName"));
             contact.setLastName(rs.getString("lastName"));
             contact.setPhone(rs.getString("phone"));

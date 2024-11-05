@@ -22,22 +22,27 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(name = "User Management")
 @RequestMapping("/api/v1/user")
 public class UserController {
-    
+
     @Autowired
     UserService userService;
-    
+
     @GetMapping("/gets")
+    @SecurityRequirement(name = "X_API_TOKEN")
     @SecurityRequirement(name = "LOG_SERVICE_TRX")
     public ResponseEntity<WebResponse> gets(@RequestParam Optional<String> username) {
         return ResponseEntity.ok(userService.gets(username));
     }
 
     @PutMapping("update-data")
-    public ResponseEntity<WebResponse> putMethodName(@RequestBody(required = true) UpdateUserRequest request) {
-        return ResponseEntity.ok(userService.update(request));
+    @SecurityRequirement(name = "X_API_TOKEN")
+    @SecurityRequirement(name = "LOG_SERVICE_TRX")
+    public ResponseEntity<WebResponse> putMethodName(@RequestParam String username, @RequestBody(required = true) UpdateUserRequest request) {
+        return ResponseEntity.ok(userService.updateData(username, request));
     }
 
     @DeleteMapping("/delete")
+    @SecurityRequirement(name = "X_API_TOKEN")
+    @SecurityRequirement(name = "LOG_SERVICE_TRX")
     public ResponseEntity<WebResponse> delete(@RequestParam String username) {
         return ResponseEntity.ok(userService.delete(username));
     }

@@ -1,18 +1,17 @@
 package id.sendistudio.spring.base.data.requests;
 
+import java.util.Optional;
+
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
 @Data
-@Getter
-@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class UpdateUserRequest {
 
     @NotBlank
-    private String name;
-
-    @NotBlank
-    private String username;
+    private Optional<String> name;
 }

@@ -12,11 +12,13 @@ import id.sendistudio.spring.base.app.middlewares.responses.WebResponse;
 import id.sendistudio.spring.base.data.requests.LoginRequest;
 import id.sendistudio.spring.base.data.requests.RegisterRequest;
 import id.sendistudio.spring.base.services.AuthService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @Tag(name = "Authentication")
 @RequestMapping("/api/v1/auth")
+@SecurityRequirement(name = "LOG_SERVICE_TRX")
 public class AuthController {
 
     @Autowired

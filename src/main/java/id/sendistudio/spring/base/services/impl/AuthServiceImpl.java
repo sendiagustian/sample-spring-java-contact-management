@@ -1,6 +1,7 @@
 package id.sendistudio.spring.base.services.impl;
 
 import java.util.Date;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -37,6 +38,23 @@ public class AuthServiceImpl implements AuthService {
 
     @Autowired
     JwtTokenUtil jwt;
+
+    private WebResponse generatenewToken(LoginRequest request, Boolean setExpired) {
+        LoginView loginView = new LoginView();
+
+        String token = jwt.generateToken(request.getUsername(), setExpired);
+        Optional<Date> expiredToken = jwt.extractExpiration(token);
+
+        Boolean updateToken = userRepository.updateToken(request.getUsername(), token, expiredToken);
+        if (!updateToken) {
+            return new ErrorResponse(500, "Failed to update token");
+        }
+
+        loginView.setToken(Optional.of(token));
+        loginView.setExpiredAt(expiredToken.map(Date::getTime).map(Optional::ofNullable).orElse(Optional.empty()));
+
+        return new DataResponse<LoginView>(200, loginView);
+    }
 
     @Override
     @Transactional
@@ -82,38 +100,25 @@ public class AuthServiceImpl implements AuthService {
 
             UserView user = userRepository.getByUsername(request.getUsername());
 
-            loginView.setToken(user.getToken());
-            loginView.setExpiredAt(user.getTokenExpiredAt());
-
-            if (user.getTokenExpiredAt() != null) {
-                Boolean tokenExpired = jwt.isTokenExpired(user.getToken());
-
-                if (tokenExpired) {
-                    String token = jwt.generateToken(request.getUsername(), setExpired);
-                    Date expiredToken = jwt.extractExpiration(token);
-                    Boolean updateToken = userRepository.updateToken(request.getUsername(), token, expiredToken);
-
-                    if (!updateToken) {
-                        return new ErrorResponse(500, "Failed to update token");
-                    }
-
-                    loginView.setToken(token);
-                    loginView.setExpiredAt(expiredToken.getTime());
-
-                }
+            if (user.getToken() == null || user.getToken().isEmpty()) {
+                return generatenewToken(request, setExpired);
             } else {
-                if (user.getToken() == null) {
-                    String token = jwt.generateToken(request.getUsername(), setExpired);
-                    Date expiredToken = jwt.extractExpiration(token);
-                    Boolean updateToken = userRepository.updateToken(request.getUsername(), token, expiredToken);
+                Boolean validToken = jwt.validateToken(user.getToken().orElse(null), request.getUsername());
 
-                    if (!updateToken) {
-                        return new ErrorResponse(500, "Failed to update token");
-                    }
-
-                    loginView.setToken(token);
-                    loginView.setExpiredAt(expiredToken.getTime());
+                if (!validToken) {
+                    throw new Exception("Invalid Token");
                 }
+
+                Boolean tokenExpired = jwt.isTokenExpired(user.getToken().orElse(null));
+
+                if (tokenExpired != null && tokenExpired) {
+                    return generatenewToken(request, setExpired);
+                }
+
+                Optional<Date> expiredToken = jwt.extractExpiration(user.getToken().orElse(null));
+
+                loginView.setToken(user.getToken());
+                loginView.setExpiredAt(expiredToken.map(Date::getTime));
             }
 
             return new DataResponse<LoginView>(200, loginView);

@@ -9,13 +9,17 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import id.sendistudio.spring.base.app.middlewares.FilterRequestMiddleware;
+import id.sendistudio.spring.base.app.middlewares.LogInterceptorMiddleware;
+import id.sendistudio.spring.base.app.middlewares.TokenInterceptorMiddleware;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
     @Autowired
-    FilterRequestMiddleware interceptorMiddleware;
+    LogInterceptorMiddleware logInterceptorMiddleware;
+
+    @Autowired
+    TokenInterceptorMiddleware tokenInterceptorMiddleware;
 
     @Bean
     RestTemplate restTemplate() {
@@ -30,5 +34,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(@NonNull InterceptorRegistry registry) {
         // Daftarkan interceptor ke semua request API
+        registry.addInterceptor(logInterceptorMiddleware).addPathPatterns("/api/**");
+        registry.addInterceptor(tokenInterceptorMiddleware).addPathPatterns("/api/**");
     }
 }

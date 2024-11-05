@@ -1,5 +1,6 @@
 package id.sendistudio.spring.base.data.requests;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -9,16 +10,18 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RegisterRequest {
+public class CreateContactRequest {
     @NotBlank
     @Size(max = 100)
-    private String username;
+    private String firstName;
 
-    @NotBlank
     @Size(max = 100)
-    private String password;
+    private String lastName;
 
-    @NotBlank
     @Size(max = 100)
-    private String name;
+    private String phone;
+
+    @Size(max = 100)
+    @Email
+    private String email;
 }

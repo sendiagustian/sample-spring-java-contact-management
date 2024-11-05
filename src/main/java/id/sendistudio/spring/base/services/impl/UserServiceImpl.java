@@ -43,6 +43,11 @@ public class UserServiceImpl implements UserService {
         try {
             if (username.isPresent() && !username.get().isEmpty()) {
                 UserView result = userRepository.getByUsername(username.get());
+
+                if (result == null) {
+                    return new ErrorResponse(404, "User not found");
+                }
+
                 return new DataResponse<UserView>(200, result);
             } else {
                 List<UserView> result = userRepository.getAll();
@@ -59,14 +64,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public WebResponse update(UpdateUserRequest request) {
+    public WebResponse updateData(String username, UpdateUserRequest request) {
         validator.validate(request);
 
         try {
-            Boolean result = userRepository.updateData(request);
+            Boolean result = userRepository.updateData(username, request);
 
             if (result) {
-                return new MessageResponse(200, request.getUsername() + " data updated!");
+                return new MessageResponse(200, request.getName() + " data updated!");
             } else {
                 return new ErrorResponse(404, "User not found");
             }

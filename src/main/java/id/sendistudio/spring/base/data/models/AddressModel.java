@@ -7,13 +7,13 @@ import java.util.Date;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.lang.NonNull;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
 @Data
-@Setter
-@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class AddressModel {
     private String uid;
 
