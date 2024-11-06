@@ -2,7 +2,7 @@
 docker build -f "Dockerfile-local" -t sendiagustian/protonema/spring-boot/contact-management .
 
 # Test run local container
-docker container create --name spring-contact-management --publish 8080:8080 sendiagustian/protonema/spring-boot/contact-management
+docker container run -d --name spring-contact-management --publish 8080:8080 sendiagustian/protonema/spring-boot/contact-management
 
 # untuk masuk container
 docker exec -it contact-management sh

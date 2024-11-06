@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -42,6 +45,10 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     @Transactional
+    @Caching(evict = {
+            @CacheEvict(value = "addressCache", allEntries = true, key = "#uid"),
+            @CacheEvict(value = "addressPaginationCache", allEntries = true, key = "#request.page")
+    })
     public WebResponse create(CreateAddressRequest request) {
         try {
             validator.validate(request);
@@ -65,6 +72,7 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(value = "addressCache", key = "#uid", unless = "#result == null")
     public WebResponse gets(
             Optional<String> uid,
             Optional<String> country,
@@ -100,6 +108,7 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(value = "addressPaginationCache", key = "#request.page", unless = "#result == null")
     public WebResponse getPagination(PaginationAddressRequest request) {
         try {
             Integer total = addressRepository.countTotalPagination(request).orElse(null);
@@ -121,6 +130,10 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     @Transactional
+    @Caching(evict = {
+            @CacheEvict(value = "addressCache", allEntries = true, key = "#uid"),
+            @CacheEvict(value = "addressPaginationCache", allEntries = true, key = "#request.page")
+    })
     public WebResponse updateData(String uid, UpdateAddressRequest request) {
         try {
             Boolean result = addressRepository.updateData(uid, request);
@@ -138,6 +151,10 @@ public class AddressServiceImpl implements AddressService {
     }
 
     @Override
+    @Caching(evict = {
+            @CacheEvict(value = "addressCache", allEntries = true, key = "#uid"),
+            @CacheEvict(value = "addressPaginationCache", allEntries = true, key = "#request.page")
+    })
     public WebResponse delete(String uid) {
         try {
             Boolean result = addressRepository.delete(uid);
