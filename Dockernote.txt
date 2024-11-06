@@ -1,11 +1,11 @@
 # Build docker
-docker build -f "Dockerfile-local" -t sendiagustian/protonema/spring-boot/user-management-service .
+docker build -f "Dockerfile-local" -t sendiagustian/protonema/spring-boot/contact-management .
 
 # Test run local container
-docker container create --name spring-user-management-service --publish 8080:8080 sendiagustian/protonema/spring-boot/user-management-service
+docker container create --name spring-contact-management --publish 8080:8080 sendiagustian/protonema/spring-boot/contact-management
 
 # untuk masuk container
-docker exec -it user-management-service sh
+docker exec -it contact-management sh
 
 # delete image <none>
 docker rmi $(docker images --filter "dangling=true" -q --no-trunc)

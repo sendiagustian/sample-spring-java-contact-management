@@ -9,10 +9,11 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ContactPaginationRequest {
-    private Optional<String> name;
-    private Optional<String> email;
-    private Optional<String> phone;
+public class PaginationAddressRequest {
+    private Optional<String> country;
+    private Optional<String> province;
+    private Optional<String> city;
+    private Optional<String> street;
 
     private Integer page;
     private Integer size;

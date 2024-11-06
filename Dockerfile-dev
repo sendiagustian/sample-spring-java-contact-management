@@ -1,5 +1,5 @@
 # Build stage
-FROM eclipse-temurin:17-alpine as build
+FROM eclipse-temurin:17-alpine AS build
 WORKDIR /app
 
 RUN apk update && apk add maven
@@ -20,4 +20,6 @@ COPY --from=build /app/app.jar /app/app.jar
 
 EXPOSE 8080
 
-CMD ["java", "-Dspring.profiles.active=dev", "-Xms128m", "-Xmx512m", "-XX:MaxMetaspaceSize=256m", "-XX:+UseG1GC", "-XX:MaxGCPauseMillis=200", "-jar", "/app/app.jar"]
+# CMD ["java", "-Dspring.profiles.active=dev", "-Xms128m", "-Xmx512m", "-XX:MaxMetaspaceSize=256m", "-XX:+UseG1GC", "-XX:MaxGCPauseMillis=200", "-jar", "/app/app.jar"]
+
+CMD ["java", "-Dspring.profiles.active=dev", "-jar", "/app/app.jar"]

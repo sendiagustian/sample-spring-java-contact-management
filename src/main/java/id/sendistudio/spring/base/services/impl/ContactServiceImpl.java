@@ -12,14 +12,15 @@ import org.springframework.transaction.annotation.Transactional;
 import id.sendistudio.spring.base.app.middlewares.responses.DataPaginationResponse;
 import id.sendistudio.spring.base.app.middlewares.responses.DataResponse;
 import id.sendistudio.spring.base.app.middlewares.responses.ErrorResponse;
+import id.sendistudio.spring.base.app.middlewares.responses.MessageResponse;
 import id.sendistudio.spring.base.app.middlewares.responses.WebResponse;
 import id.sendistudio.spring.base.app.utils.ErrorUtil;
 import id.sendistudio.spring.base.app.utils.JwtTokenUtil;
 import id.sendistudio.spring.base.app.utils.ServletUtil;
 import id.sendistudio.spring.base.app.utils.TypeUtil;
 import id.sendistudio.spring.base.app.utils.ValidatorUtil;
-import id.sendistudio.spring.base.data.requests.ContactPaginationRequest;
 import id.sendistudio.spring.base.data.requests.ContactRequest;
+import id.sendistudio.spring.base.data.requests.PaginationContactRequest;
 import id.sendistudio.spring.base.data.views.ContactView;
 import id.sendistudio.spring.base.data.views.PagingView;
 import id.sendistudio.spring.base.repositories.ContactRepository;
@@ -113,7 +114,7 @@ public class ContactServiceImpl implements ContactService {
 
     @Override
     @Transactional(readOnly = true)
-    public WebResponse getPagination(ContactPaginationRequest request) {
+    public WebResponse getPagination(PaginationContactRequest request) {
         try {
             Integer total = contactRepository.countTotalPagination(request).orElse(0);
             Page<ContactView> results = contactRepository.getPagination(request, total);
@@ -134,13 +135,13 @@ public class ContactServiceImpl implements ContactService {
 
     @Override
     @Transactional
-    public WebResponse updateData(String username, ContactRequest request) {
+    public WebResponse updateData(String uid, ContactRequest request) {
         try {
             validator.validate(request);
-            Boolean result = contactRepository.updateData(username, request);
+            Boolean result = contactRepository.updateData(uid, request);
 
             if (result) {
-                return new DataResponse<String>(200, "Contact updated successfully");
+                return new MessageResponse(200, "Contact updated successfully");
             } else {
                 return new ErrorResponse(500, "Failed to update contact");
             }
@@ -158,7 +159,7 @@ public class ContactServiceImpl implements ContactService {
             Boolean result = contactRepository.deleteByUid(uid);
 
             if (result) {
-                return new DataResponse<String>(200, "Contact deleted successfully");
+                return new MessageResponse(200, "Contact deleted successfully");
             } else {
                 return new ErrorResponse(500, "Failed to delete contact");
             }
@@ -176,7 +177,7 @@ public class ContactServiceImpl implements ContactService {
             Boolean result = contactRepository.deleteByPhone(phone);
 
             if (result) {
-                return new DataResponse<String>(200, "Contact deleted successfully");
+                return new MessageResponse(200, "Contact deleted successfully");
             } else {
                 return new ErrorResponse(500, "Failed to delete contact");
             }

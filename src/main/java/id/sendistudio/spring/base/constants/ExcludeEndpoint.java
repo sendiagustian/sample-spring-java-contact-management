@@ -17,11 +17,16 @@ public class ExcludeEndpoint {
     private List<String> logExcludes = new ArrayList<>();
 
     public ExcludeEndpoint() {
+
+        // Health Check
+        logExcludes.add("/api/v1/health-check");
+        tokenExcludes.add("/api/v1/health-check");
+        
         // Auth
         tokenExcludes.add("/api/v1/auth/login");
         tokenExcludes.add("/api/v1/auth/register");
         tokenExcludes.add("/api/v1/auth/logout");
-
+        
         // tokenExcludes.add("/api/v1/user/gets");
     }
 

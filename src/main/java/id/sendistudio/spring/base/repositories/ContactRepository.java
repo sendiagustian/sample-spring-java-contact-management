@@ -12,8 +12,8 @@ import org.springframework.stereotype.Repository;
 
 import id.sendistudio.spring.base.app.utils.QueryUtil;
 import id.sendistudio.spring.base.app.utils.TypeUtil;
-import id.sendistudio.spring.base.data.requests.ContactPaginationRequest;
 import id.sendistudio.spring.base.data.requests.ContactRequest;
+import id.sendistudio.spring.base.data.requests.PaginationContactRequest;
 import id.sendistudio.spring.base.data.views.ContactView;
 
 @Repository
@@ -46,7 +46,7 @@ public class ContactRepository {
         return query.queryForList(sql, new ContactView.ContactViewRowMapper(), parameters.toArray());
     }
 
-    public Optional<Integer> countTotalPagination(ContactPaginationRequest request) {
+    public Optional<Integer> countTotalPagination(PaginationContactRequest request) {
         String sql = "SELECT COUNT(*) as total FROM tbContacts";
         List<Object> parameters = new ArrayList<>();
 
@@ -77,7 +77,7 @@ public class ContactRepository {
         return query.queryForObject(sql, integerRowMapper, parameters.toArray());
     }
 
-    public PageImpl<ContactView> getPagination(ContactPaginationRequest request, Integer total) {
+    public PageImpl<ContactView> getPagination(PaginationContactRequest request, Integer total) {
         String sql = "SELECT * FROM tbContacts";
 
         List<Object> parameters = new ArrayList<>();
@@ -131,10 +131,10 @@ public class ContactRepository {
         return query.queryForObject(sql, new ContactView.ContactViewRowMapper(), phone);
     }
 
-    public Boolean updateData(String username, ContactRequest request) {
-        String sql = "UPDATE tbContacts SET firstName = ?, lastName = ?, phone = ?, email = ? WHERE username = ?";
+    public Boolean updateData(String uid, ContactRequest request) {
+        String sql = "UPDATE tbContacts SET firstName = ?, lastName = ?, phone = ?, email = ? WHERE uid = ?";
         int response = query.exec(sql, request.getFirstName(), request.getLastName(), request.getPhone(),
-                request.getEmail(), username);
+                request.getEmail(), uid);
         return response > 0;
     }
 
