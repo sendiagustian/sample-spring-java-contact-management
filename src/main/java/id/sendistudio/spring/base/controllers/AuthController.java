@@ -18,7 +18,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @Tag(name = "Authentication")
 @RequestMapping("/api/v1/auth")
-@SecurityRequirement(name = "LOG_SERVICE_TRX")
+@SecurityRequirement(name = "LOG-SERVICE-TRX")
 public class AuthController {
 
     @Autowired

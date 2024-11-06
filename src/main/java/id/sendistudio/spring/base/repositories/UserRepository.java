@@ -44,14 +44,14 @@ public class UserRepository {
         return query.queryForList(sql, new UserView.UserViewRowMapper());
     }
 
-    public UserView getByUsername(String username) {
+    public Optional<UserView> getByUsername(String username) {
         String sql = "SELECT * FROM tbUsers WHERE username = ?";
-        return query.queryForObject(sql, new UserView.UserViewRowMapper(), username).orElse(null);
+        return query.queryForObject(sql, new UserView.UserViewRowMapper(), username);
     }
 
-    public UserView getByToken(String token) {
+    public Optional<UserView> getByToken(String token) {
         String sql = "SELECT * FROM tbUsers WHERE token = ?";
-        return query.queryForObject(sql, new UserView.UserViewRowMapper(), token).orElse(null);
+        return query.queryForObject(sql, new UserView.UserViewRowMapper(), token);
     }
 
     public Boolean updateToken(String username, String token, Optional<Date> tokenExpiredAt) {

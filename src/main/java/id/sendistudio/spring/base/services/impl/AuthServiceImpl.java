@@ -13,6 +13,7 @@ import id.sendistudio.spring.base.app.middlewares.responses.DataResponse;
 import id.sendistudio.spring.base.app.middlewares.responses.ErrorResponse;
 import id.sendistudio.spring.base.app.middlewares.responses.MessageResponse;
 import id.sendistudio.spring.base.app.middlewares.responses.WebResponse;
+import id.sendistudio.spring.base.app.utils.ErrorUtil;
 import id.sendistudio.spring.base.app.utils.JwtTokenUtil;
 import id.sendistudio.spring.base.app.utils.ValidatorUtil;
 import id.sendistudio.spring.base.data.requests.LoginRequest;
@@ -32,6 +33,9 @@ public class AuthServiceImpl implements AuthService {
 
     @Autowired
     ValidatorUtil validator;
+
+    @Autowired
+    ErrorUtil errorHandler;
 
     @Autowired
     PasswordEncoder passwordEncoder;
@@ -59,9 +63,8 @@ public class AuthServiceImpl implements AuthService {
     @Override
     @Transactional
     public WebResponse register(RegisterRequest request) {
-        validator.validate(request);
-
         try {
+            validator.validate(request);
             Boolean result = userRepository.create(request);
 
             if (result) {
@@ -70,11 +73,9 @@ public class AuthServiceImpl implements AuthService {
                 return new ErrorResponse(409, "Username already exists");
             }
         } catch (DataAccessException e) {
-            log.info("Data Error : " + e.getMessage());
-            return new ErrorResponse(500, "Data error: " + e.getMessage());
+            return errorHandler.errorData(e);
         } catch (Exception e) {
-            log.info("Internal Server Error : " + e.getMessage());
-            return new ErrorResponse(500, "Internal Server Error: " + e.getMessage());
+            return errorHandler.errorServer(e);
         }
     }
 
@@ -98,7 +99,7 @@ public class AuthServiceImpl implements AuthService {
                 return new ErrorResponse(401, "Invalid username or password");
             }
 
-            UserView user = userRepository.getByUsername(request.getUsername());
+            UserView user = userRepository.getByUsername(request.getUsername()).orElse(null);
 
             if (user.getToken() == null || user.getToken().isEmpty()) {
                 return generatenewToken(request, setExpired);
@@ -123,11 +124,9 @@ public class AuthServiceImpl implements AuthService {
 
             return new DataResponse<LoginView>(200, loginView);
         } catch (DataAccessException e) {
-            log.info("Data Error : " + e.getMessage());
-            return new ErrorResponse(500, "Data error: " + e.getMessage());
+            return errorHandler.errorData(e);
         } catch (Exception e) {
-            log.info("Internal Server Error : " + e.getMessage());
-            return new ErrorResponse(500, "Internal Server Error: " + e.getMessage());
+            return errorHandler.errorServer(e);
         }
     }
 
@@ -143,11 +142,9 @@ public class AuthServiceImpl implements AuthService {
                 return new ErrorResponse(404, "User not found");
             }
         } catch (DataAccessException e) {
-            log.info("Data Error : " + e.getMessage());
-            return new ErrorResponse(500, "Data error: " + e.getMessage());
+            return errorHandler.errorData(e);
         } catch (Exception e) {
-            log.info("Internal Server Error : " + e.getMessage());
-            return new ErrorResponse(500, "Internal Server Error: " + e.getMessage());
+            return errorHandler.errorServer(e);
         }
     }
 

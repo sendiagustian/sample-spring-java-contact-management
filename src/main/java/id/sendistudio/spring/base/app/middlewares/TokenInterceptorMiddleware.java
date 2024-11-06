@@ -21,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
-@SecurityScheme(name = "X_API_TOKEN", type = SecuritySchemeType.APIKEY, in = SecuritySchemeIn.HEADER)
+@SecurityScheme(name = "X-API-TOKEN", type = SecuritySchemeType.APIKEY, in = SecuritySchemeIn.HEADER)
 public class TokenInterceptorMiddleware implements HandlerInterceptor {
 
     @Autowired
@@ -38,12 +38,12 @@ public class TokenInterceptorMiddleware implements HandlerInterceptor {
             @NonNull Object handler) throws Exception {
 
         String requestURI = request.getRequestURI();
-        String tokenHeader = request.getHeader("X_API_TOKEN");
+        String tokenHeader = request.getHeader("X-API-TOKEN");
 
         List<String> tokenExcludes = excludeEndpoint.getTokenExcludes();
         if (!tokenExcludes.stream().anyMatch(requestURI::startsWith)) {
             if (tokenHeader == null || tokenHeader.isEmpty()) {
-                throw new MissingServletRequestParameterException("X_API_TOKEN", "Header");
+                throw new MissingServletRequestParameterException("X-API-TOKEN", "Header");
             }
 
             String username = jwt.extractClaim(tokenHeader, claims -> claims.get("sub", String.class)).orElse(null);
@@ -57,7 +57,7 @@ public class TokenInterceptorMiddleware implements HandlerInterceptor {
                 if (tokenExpired) {
                     throw new Exception("Token Expired");
                 } else {
-                    UserView user = userRepository.getByToken(tokenHeader);
+                    UserView user = userRepository.getByToken(tokenHeader).orElse(null);
 
                     if (user == null) {
                         throw new Exception("Token Header not valid or user not found");

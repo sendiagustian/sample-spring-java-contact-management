@@ -27,22 +27,23 @@ public class UserController {
     UserService userService;
 
     @GetMapping("/gets")
-    @SecurityRequirement(name = "X_API_TOKEN")
-    @SecurityRequirement(name = "LOG_SERVICE_TRX")
+    @SecurityRequirement(name = "X-API-TOKEN")
+    @SecurityRequirement(name = "LOG-SERVICE-TRX")
     public ResponseEntity<WebResponse> gets(@RequestParam Optional<String> username) {
         return ResponseEntity.ok(userService.gets(username));
     }
 
     @PutMapping("update-data")
-    @SecurityRequirement(name = "X_API_TOKEN")
-    @SecurityRequirement(name = "LOG_SERVICE_TRX")
-    public ResponseEntity<WebResponse> putMethodName(@RequestParam String username, @RequestBody(required = true) UpdateUserRequest request) {
+    @SecurityRequirement(name = "X-API-TOKEN")
+    @SecurityRequirement(name = "LOG-SERVICE-TRX")
+    public ResponseEntity<WebResponse> putMethodName(@RequestParam String username,
+            @RequestBody(required = true) UpdateUserRequest request) {
         return ResponseEntity.ok(userService.updateData(username, request));
     }
 
     @DeleteMapping("/delete")
-    @SecurityRequirement(name = "X_API_TOKEN")
-    @SecurityRequirement(name = "LOG_SERVICE_TRX")
+    @SecurityRequirement(name = "X-API-TOKEN")
+    @SecurityRequirement(name = "LOG-SERVICE-TRX")
     public ResponseEntity<WebResponse> delete(@RequestParam String username) {
         return ResponseEntity.ok(userService.delete(username));
     }

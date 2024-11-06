@@ -9,10 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 import id.sendistudio.spring.base.app.middlewares.responses.WebResponse;
 import id.sendistudio.spring.base.services.HealthCheckService;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequiredArgsConstructor
 @Tag(name = "Health Check")
 @RequestMapping("/api/v1")
 public class HealthCheckController {

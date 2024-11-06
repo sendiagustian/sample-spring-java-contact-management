@@ -30,7 +30,7 @@ public class ContactView {
 
     private Date updatedAt;
 
-    public static class ContactRowMapper implements RowMapper<ContactView> {
+    public static class ContactViewRowMapper implements RowMapper<ContactView> {
 
         @Override
         public ContactView mapRow(@NonNull ResultSet rs, int rowNum) throws SQLException {

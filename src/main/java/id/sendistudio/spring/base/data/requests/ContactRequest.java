@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateContactRequest {
+public class ContactRequest {
     @NotBlank
     @Size(max = 100)
     private String firstName;
@@ -21,7 +21,7 @@ public class CreateContactRequest {
     @Size(max = 100)
     private String phone;
 
-    @Size(max = 100)
     @Email
+    @Size(max = 100)
     private String email;
 }

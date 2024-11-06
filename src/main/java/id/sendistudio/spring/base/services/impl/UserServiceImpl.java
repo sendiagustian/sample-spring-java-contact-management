@@ -1,6 +1,5 @@
 package id.sendistudio.spring.base.services.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,6 +13,7 @@ import id.sendistudio.spring.base.app.middlewares.responses.DataResponse;
 import id.sendistudio.spring.base.app.middlewares.responses.ErrorResponse;
 import id.sendistudio.spring.base.app.middlewares.responses.MessageResponse;
 import id.sendistudio.spring.base.app.middlewares.responses.WebResponse;
+import id.sendistudio.spring.base.app.utils.ErrorUtil;
 import id.sendistudio.spring.base.app.utils.JwtTokenUtil;
 import id.sendistudio.spring.base.app.utils.ValidatorUtil;
 import id.sendistudio.spring.base.data.requests.UpdateUserRequest;
@@ -33,16 +33,20 @@ public class UserServiceImpl implements UserService {
     ValidatorUtil validator;
 
     @Autowired
+    ErrorUtil errorHandler;
+
+    @Autowired
     PasswordEncoder passwordEncoder;
 
     @Autowired
     JwtTokenUtil jwt;
 
     @Override
+    @Transactional(readOnly = true)
     public WebResponse gets(Optional<String> username) {
         try {
             if (username.isPresent() && !username.get().isEmpty()) {
-                UserView result = userRepository.getByUsername(username.get());
+                UserView result = userRepository.getByUsername(username.get()).orElse(null);
 
                 if (result == null) {
                     return new ErrorResponse(404, "User not found");
@@ -51,23 +55,20 @@ public class UserServiceImpl implements UserService {
                 return new DataResponse<UserView>(200, result);
             } else {
                 List<UserView> result = userRepository.getAll();
-                return new DataResponse<List<UserView>>(200, result.isEmpty() ? new ArrayList<>() : result);
+                return new DataResponse<List<UserView>>(200, result.isEmpty() ? List.of() : result);
             }
         } catch (DataAccessException e) {
-            log.info("Data Error : " + e.getMessage());
-            return new ErrorResponse(404, "User not found");
+            return errorHandler.errorNotFound(e);
         } catch (Exception e) {
-            log.info("Internal Server Error : " + e.getMessage());
-            return new ErrorResponse(500, "Internal Server Error: " + e.getMessage());
+            return errorHandler.errorServer(e);
         }
     }
 
     @Override
     @Transactional
     public WebResponse updateData(String username, UpdateUserRequest request) {
-        validator.validate(request);
-
         try {
+            validator.validate(request);
             Boolean result = userRepository.updateData(username, request);
 
             if (result) {
@@ -76,11 +77,9 @@ public class UserServiceImpl implements UserService {
                 return new ErrorResponse(404, "User not found");
             }
         } catch (DataAccessException e) {
-            log.info("Data Error : " + e.getMessage());
-            return new ErrorResponse(500, "Data error: " + e.getMessage());
+            return errorHandler.errorData(e);
         } catch (Exception e) {
-            log.info("Internal Server Error : " + e.getMessage());
-            return new ErrorResponse(500, "Internal Server Error: " + e.getMessage());
+            return errorHandler.errorServer(e);
         }
     }
 
@@ -96,11 +95,9 @@ public class UserServiceImpl implements UserService {
                 return new ErrorResponse(404, "User not found");
             }
         } catch (DataAccessException e) {
-            log.info("Data Error : " + e.getMessage());
-            return new ErrorResponse(500, "Data error: " + e.getMessage());
+            return errorHandler.errorData(e);
         } catch (Exception e) {
-            log.info("Internal Server Error : " + e.getMessage());
-            return new ErrorResponse(500, "Internal Server Error: " + e.getMessage());
+            return errorHandler.errorServer(e);
         }
     }
 
