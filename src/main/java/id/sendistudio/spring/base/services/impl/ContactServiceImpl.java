@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -51,6 +54,10 @@ public class ContactServiceImpl implements ContactService {
 
     @Override
     @Transactional
+    @Caching(evict = {
+            @CacheEvict(value = "contactCache", allEntries = true),
+            @CacheEvict(value = "contactPaginateCache", allEntries = true),
+    })
     public WebResponse create(ContactRequest request) {
         try {
             validator.validate(request);
@@ -77,6 +84,7 @@ public class ContactServiceImpl implements ContactService {
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(value = "contactCache", unless = "#result == null or #result.status != 200")
     public WebResponse gets(Optional<String> uid, Optional<String> phone, Optional<String> name) {
         try {
             if ((uid.isPresent() || phone.isPresent()) && name.isPresent()) {
@@ -114,6 +122,7 @@ public class ContactServiceImpl implements ContactService {
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(value = "contactPaginateCache", key = "#request", unless = "#result == null or #result.status != 200")
     public WebResponse getPagination(PaginationContactRequest request) {
         try {
             Integer total = contactRepository.countTotalPagination(request).orElse(0);
@@ -135,6 +144,10 @@ public class ContactServiceImpl implements ContactService {
 
     @Override
     @Transactional
+    @Caching(evict = {
+            @CacheEvict(value = "contactCache", allEntries = true),
+            @CacheEvict(value = "contactPaginateCache", allEntries = true),
+    })
     public WebResponse updateData(String uid, ContactRequest request) {
         try {
             validator.validate(request);
@@ -154,6 +167,10 @@ public class ContactServiceImpl implements ContactService {
 
     @Override
     @Transactional
+    @Caching(evict = {
+            @CacheEvict(value = "contactCache", allEntries = true),
+            @CacheEvict(value = "contactPaginateCache", allEntries = true),
+    })
     public WebResponse deleteByUid(String uid) {
         try {
             Boolean result = contactRepository.deleteByUid(uid);
@@ -172,6 +189,10 @@ public class ContactServiceImpl implements ContactService {
 
     @Override
     @Transactional
+    @Caching(evict = {
+            @CacheEvict(value = "contactCache", allEntries = true),
+            @CacheEvict(value = "contactPaginateCache", allEntries = true),
+    })
     public WebResponse deleteByPhone(String phone) {
         try {
             Boolean result = contactRepository.deleteByPhone(phone);

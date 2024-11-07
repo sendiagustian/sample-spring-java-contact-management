@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataAccessException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -43,6 +45,7 @@ public class AuthServiceImpl implements AuthService {
     @Autowired
     JwtTokenUtil jwt;
 
+    @Transactional()
     private WebResponse generatenewToken(LoginRequest request, Boolean setExpired) {
         LoginView loginView = new LoginView();
 
@@ -81,6 +84,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     @Transactional
+    @Cacheable(value = "loginCache", key = "#request", unless = "#result == null or #result.status != 200")
     public WebResponse login(Boolean setExpired, LoginRequest request) {
         try {
             setExpired = (setExpired != null) ? setExpired : false;
@@ -132,6 +136,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "loginCache", allEntries = true)
     public WebResponse logout(String username) {
         try {
             Boolean result = userRepository.updateToken(username, null, null);

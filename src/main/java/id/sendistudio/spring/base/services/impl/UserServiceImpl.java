@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataAccessException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -43,6 +45,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(value = "userCache", key = "#username", unless = "#result == null or #result.status != 200")
     public WebResponse gets(Optional<String> username) {
         try {
             if (username.isPresent() && !username.get().isEmpty()) {
@@ -66,6 +69,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "userCache", allEntries = true)
     public WebResponse updateData(String username, UpdateUserRequest request) {
         try {
             validator.validate(request);
@@ -85,6 +89,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "userCache", allEntries = true)
     public WebResponse delete(String username) {
         try {
             Boolean result = userRepository.deleteByUsername(username);

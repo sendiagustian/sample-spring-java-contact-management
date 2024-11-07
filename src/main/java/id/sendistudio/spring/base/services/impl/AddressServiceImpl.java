@@ -46,8 +46,8 @@ public class AddressServiceImpl implements AddressService {
     @Override
     @Transactional
     @Caching(evict = {
-            @CacheEvict(value = "addressCache", allEntries = true, key = "#uid"),
-            @CacheEvict(value = "addressPaginationCache", allEntries = true, key = "#request.page")
+            @CacheEvict(value = "addressCache", allEntries = true),
+            @CacheEvict(value = "addressPaginationCache", allEntries = true),
     })
     public WebResponse create(CreateAddressRequest request) {
         try {
@@ -72,7 +72,7 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     @Transactional(readOnly = true)
-    @Cacheable(value = "addressCache", key = "#uid", unless = "#result == null")
+    @Cacheable(value = "addressCache", unless = "#result == null or #result.status != 200")
     public WebResponse gets(
             Optional<String> uid,
             Optional<String> country,
@@ -108,7 +108,7 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     @Transactional(readOnly = true)
-    @Cacheable(value = "addressPaginationCache", key = "#request.page", unless = "#result == null")
+    @Cacheable(value = "addressPaginationCache", key = "#request", unless = "#result == null or #result.status != 200")
     public WebResponse getPagination(PaginationAddressRequest request) {
         try {
             Integer total = addressRepository.countTotalPagination(request).orElse(null);
@@ -131,8 +131,8 @@ public class AddressServiceImpl implements AddressService {
     @Override
     @Transactional
     @Caching(evict = {
-            @CacheEvict(value = "addressCache", allEntries = true, key = "#uid"),
-            @CacheEvict(value = "addressPaginationCache", allEntries = true, key = "#request.page")
+            @CacheEvict(value = "addressCache", allEntries = true),
+            @CacheEvict(value = "addressPaginationCache", allEntries = true),
     })
     public WebResponse updateData(String uid, UpdateAddressRequest request) {
         try {
@@ -152,8 +152,8 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     @Caching(evict = {
-            @CacheEvict(value = "addressCache", allEntries = true, key = "#uid"),
-            @CacheEvict(value = "addressPaginationCache", allEntries = true, key = "#request.page")
+            @CacheEvict(value = "addressCache", allEntries = true),
+            @CacheEvict(value = "addressPaginationCache", allEntries = true),
     })
     public WebResponse delete(String uid) {
         try {
