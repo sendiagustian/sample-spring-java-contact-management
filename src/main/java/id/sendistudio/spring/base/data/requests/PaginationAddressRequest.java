@@ -1,7 +1,6 @@
 package id.sendistudio.spring.base.data.requests;
 
-import java.util.Optional;
-
+import jakarta.annotation.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,10 +9,17 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PaginationAddressRequest {
-    private Optional<String> country;
-    private Optional<String> province;
-    private Optional<String> city;
-    private Optional<String> street;
+    @Nullable
+    private String country;
+
+    @Nullable
+    private String province;
+
+    @Nullable
+    private String city;
+
+    @Nullable
+    private String street;
 
     private Integer page;
     private Integer size;

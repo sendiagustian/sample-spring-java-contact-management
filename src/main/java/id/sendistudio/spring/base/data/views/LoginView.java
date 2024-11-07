@@ -1,7 +1,6 @@
 package id.sendistudio.spring.base.data.views;
 
-import java.util.Optional;
-
+import io.micrometer.common.lang.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,6 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class LoginView {
-    private Optional<String> token;
-    private Optional<Long> expiredAt;
+    @Nullable
+    private String token;
+
+    private Long expiredAt;
 }

@@ -1,7 +1,5 @@
 package id.sendistudio.spring.base.controllers;
 
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -26,7 +24,7 @@ import jakarta.validation.Valid;
 @Tag(name = "Address Management")
 @RequestMapping("/api/v1/address")
 public class AddressController {
-    
+
     @Autowired
     AddressService addressService;
 
@@ -41,11 +39,11 @@ public class AddressController {
     @SecurityRequirement(name = "X-API-TOKEN")
     @SecurityRequirement(name = "LOG-SERVICE-TRX")
     public ResponseEntity<WebResponse> gets(
-            @RequestParam(required = false) Optional<String> uid,
-            @RequestParam(required = false) Optional<String> country,
-            @RequestParam(required = false) Optional<String> province,
-            @RequestParam(required = false) Optional<String> city,
-            @RequestParam(required = false) Optional<String> street) {
+            @RequestParam(required = false) String uid,
+            @RequestParam(required = false) String country,
+            @RequestParam(required = false) String province,
+            @RequestParam(required = false) String city,
+            @RequestParam(required = false) String street) {
 
         return ResponseEntity.ok(addressService.gets(uid, country, province, city, street));
     }
@@ -54,10 +52,10 @@ public class AddressController {
     @SecurityRequirement(name = "X-API-TOKEN")
     @SecurityRequirement(name = "LOG-SERVICE-TRX")
     public ResponseEntity<WebResponse> gets(
-            @RequestParam(required = false) Optional<String> country,
-            @RequestParam(required = false) Optional<String> province,
-            @RequestParam(required = false) Optional<String> city,
-            @RequestParam(required = false) Optional<String> street,
+            @RequestParam(required = false) String country,
+            @RequestParam(required = false) String province,
+            @RequestParam(required = false) String city,
+            @RequestParam(required = false) String street,
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer size) {
 

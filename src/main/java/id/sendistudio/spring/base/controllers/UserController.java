@@ -1,7 +1,5 @@
 package id.sendistudio.spring.base.controllers;
 
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -29,7 +27,7 @@ public class UserController {
     @GetMapping("/gets")
     @SecurityRequirement(name = "X-API-TOKEN")
     @SecurityRequirement(name = "LOG-SERVICE-TRX")
-    public ResponseEntity<WebResponse> gets(@RequestParam Optional<String> username) {
+    public ResponseEntity<WebResponse> gets(@RequestParam String username) {
         return ResponseEntity.ok(userService.gets(username));
     }
 

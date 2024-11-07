@@ -1,7 +1,6 @@
 package id.sendistudio.spring.base.services.impl;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -85,23 +84,23 @@ public class ContactServiceImpl implements ContactService {
     @Override
     @Transactional(readOnly = true)
     @Cacheable(value = "contactCache", unless = "#result == null or #result.status != 200")
-    public WebResponse gets(Optional<String> uid, Optional<String> phone, Optional<String> name) {
+    public WebResponse gets(String uid, String phone, String name) {
         try {
-            if ((uid.isPresent() || phone.isPresent()) && name.isPresent()) {
+            if ((uid != null || phone != null) && name != null) {
                 return new ErrorResponse(400, "Invalid request can't use uid, phone, and name at the same time");
-            } else if (uid.isPresent() && phone.isPresent()) {
+            } else if (uid != null && phone != null) {
                 return new ErrorResponse(400, "Invalid request can't use uid and phone at the same time");
             } else {
-                if (uid.isPresent()) {
-                    ContactView result = contactRepository.getByUid(uid.get()).orElse(null);
+                if (uid != null) {
+                    ContactView result = contactRepository.getByUid(uid).orElse(null);
 
                     if (result == null) {
                         return new ErrorResponse(404, "Contact not found");
                     }
 
                     return new DataResponse<ContactView>(200, result);
-                } else if (phone.isPresent()) {
-                    ContactView result = contactRepository.getByPhone(phone.get()).orElse(null);
+                } else if (phone != null) {
+                    ContactView result = contactRepository.getByPhone(phone).orElse(null);
 
                     if (result == null) {
                         return new ErrorResponse(404, "Contact not found");

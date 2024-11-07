@@ -57,8 +57,8 @@ public class AuthServiceImpl implements AuthService {
             return new ErrorResponse(500, "Failed to update token");
         }
 
-        loginView.setToken(Optional.of(token));
-        loginView.setExpiredAt(expiredToken.map(Date::getTime).map(Optional::ofNullable).orElse(Optional.empty()));
+        loginView.setToken(token);
+        expiredToken.ifPresent(date -> loginView.setExpiredAt(date.getTime()));
 
         return new DataResponse<LoginView>(200, loginView);
     }
@@ -108,22 +108,22 @@ public class AuthServiceImpl implements AuthService {
             if (user.getToken() == null || user.getToken().isEmpty()) {
                 return generatenewToken(request, setExpired);
             } else {
-                Boolean validToken = jwt.validateToken(user.getToken().orElse(null), request.getUsername());
+                Boolean validToken = jwt.validateToken(user.getToken(), request.getUsername());
 
                 if (!validToken) {
                     throw new Exception("Invalid Token");
                 }
 
-                Boolean tokenExpired = jwt.isTokenExpired(user.getToken().orElse(null));
+                Boolean tokenExpired = jwt.isTokenExpired(user.getToken());
 
                 if (tokenExpired != null && tokenExpired) {
                     return generatenewToken(request, setExpired);
                 }
 
-                Optional<Date> expiredToken = jwt.extractExpiration(user.getToken().orElse(null));
+                Optional<Date> expiredToken = jwt.extractExpiration(user.getToken());
 
                 loginView.setToken(user.getToken());
-                loginView.setExpiredAt(expiredToken.map(Date::getTime));
+                expiredToken.ifPresent(date -> loginView.setExpiredAt(date.getTime()));
             }
 
             return new DataResponse<LoginView>(200, loginView);

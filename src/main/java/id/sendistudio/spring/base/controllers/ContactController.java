@@ -1,7 +1,5 @@
 package id.sendistudio.spring.base.controllers;
 
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -40,9 +38,9 @@ public class ContactController {
     @SecurityRequirement(name = "X-API-TOKEN")
     @SecurityRequirement(name = "LOG-SERVICE-TRX")
     public ResponseEntity<WebResponse> gets(
-            @RequestParam(required = false) Optional<String> uid,
-            @RequestParam(required = false) Optional<String> phone,
-            @RequestParam(required = false) Optional<String> name) {
+            @RequestParam(required = false) String uid,
+            @RequestParam(required = false) String phone,
+            @RequestParam(required = false) String name) {
 
         return ResponseEntity.ok(contactService.gets(uid, phone, name));
     }
@@ -51,9 +49,9 @@ public class ContactController {
     @SecurityRequirement(name = "X-API-TOKEN")
     @SecurityRequirement(name = "LOG-SERVICE-TRX")
     public ResponseEntity<WebResponse> gets(
-            @RequestParam(required = false) Optional<String> name,
-            @RequestParam(required = false) Optional<String> phone,
-            @RequestParam(required = false) Optional<String> email,
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String phone,
+            @RequestParam(required = false) String email,
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer size) {
 

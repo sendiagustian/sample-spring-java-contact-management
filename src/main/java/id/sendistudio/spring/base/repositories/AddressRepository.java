@@ -39,38 +39,37 @@ public class AddressRepository {
         return response > 0;
     }
 
-    public List<AddressView> gets(Optional<String> country, Optional<String> province, Optional<String> city,
-            Optional<String> street) {
+    public List<AddressView> gets(String country, String province, String city, String street) {
         String sql = "SELECT * FROM tbAddresses";
 
         List<Object> parameters = new ArrayList<>();
 
-        if (country.isPresent()) {
+        if (country != null) {
             Boolean whereExist = sql.contains("WHERE");
             sql += whereExist ? " AND (country LIKE ?)" : " WHERE (country LIKE ?)";
-            String searchPattern = "%" + country.get() + "%";
+            String searchPattern = "%" + country + "%";
             parameters.add(searchPattern);
             parameters.add(searchPattern);
         }
 
-        if (province.isPresent()) {
+        if (province != null) {
             Boolean whereExist = sql.contains("WHERE");
             sql += whereExist ? " AND (province LIKE ?)" : " WHERE (province LIKE ?)";
-            String searchPattern = "%" + province.get() + "%";
+            String searchPattern = "%" + province + "%";
             parameters.add(searchPattern);
         }
 
-        if (city.isPresent()) {
+        if (city != null) {
             Boolean whereExist = sql.contains("WHERE");
             sql += whereExist ? " AND city LIKE ?" : " WHERE (city LIKE ?)";
-            String searchPattern = "%" + city.get() + "%";
+            String searchPattern = "%" + city + "%";
             parameters.add(searchPattern);
         }
 
-        if (street.isPresent()) {
+        if (street != null) {
             Boolean whereExist = sql.contains("WHERE");
             sql += whereExist ? " AND street LIKE ?" : " WHERE (street LIKE ?)";
-            String searchPattern = "%" + street.get() + "%";
+            String searchPattern = "%" + street + "%";
             parameters.add(searchPattern);
         }
 
@@ -81,32 +80,32 @@ public class AddressRepository {
         String sql = "SELECT COUNT(*) as total FROM tbAddresses";
         List<Object> parameters = new ArrayList<>();
 
-        if (request.getCountry().isPresent()) {
+        if (request.getCountry() != null) {
             Boolean whereExist = sql.contains("WHERE");
             sql += whereExist ? " AND (country LIKE ?)" : " WHERE (country LIKE ?)";
-            String searchPattern = "%" + request.getCountry().get() + "%";
+            String searchPattern = "%" + request.getCountry() + "%";
             parameters.add(searchPattern);
             parameters.add(searchPattern);
         }
 
-        if (request.getProvince().isPresent()) {
+        if (request.getProvince() != null) {
             Boolean whereExist = sql.contains("WHERE");
             sql += whereExist ? " AND (province LIKE ?)" : " WHERE (province LIKE ?)";
-            String searchPattern = "%" + request.getProvince().get() + "%";
+            String searchPattern = "%" + request.getProvince() + "%";
             parameters.add(searchPattern);
         }
 
-        if (request.getCity().isPresent()) {
+        if (request.getCity() != null) {
             Boolean whereExist = sql.contains("WHERE");
             sql += whereExist ? " AND city LIKE ?" : " WHERE (city LIKE ?)";
-            String searchPattern = "%" + request.getCity().get() + "%";
+            String searchPattern = "%" + request.getCity() + "%";
             parameters.add(searchPattern);
         }
 
-        if (request.getStreet().isPresent()) {
+        if (request.getStreet() != null) {
             Boolean whereExist = sql.contains("WHERE");
             sql += whereExist ? " AND street LIKE ?" : " WHERE (street LIKE ?)";
-            String searchPattern = "%" + request.getStreet().get() + "%";
+            String searchPattern = "%" + request.getStreet() + "%";
             parameters.add(searchPattern);
         }
 
@@ -119,32 +118,32 @@ public class AddressRepository {
 
         List<Object> parameters = new ArrayList<>();
 
-        if (request.getCountry().isPresent()) {
+        if (request.getCountry() != null) {
             Boolean whereExist = sql.contains("WHERE");
             sql += whereExist ? " AND (country LIKE ?)" : " WHERE (country LIKE ?)";
-            String searchPattern = "%" + request.getCountry().get() + "%";
+            String searchPattern = "%" + request.getCountry() + "%";
             parameters.add(searchPattern);
             parameters.add(searchPattern);
         }
 
-        if (request.getProvince().isPresent()) {
+        if (request.getProvince() != null) {
             Boolean whereExist = sql.contains("WHERE");
             sql += whereExist ? " AND (province LIKE ?)" : " WHERE (province LIKE ?)";
-            String searchPattern = "%" + request.getProvince().get() + "%";
+            String searchPattern = "%" + request.getProvince() + "%";
             parameters.add(searchPattern);
         }
 
-        if (request.getCity().isPresent()) {
+        if (request.getCity() != null) {
             Boolean whereExist = sql.contains("WHERE");
             sql += whereExist ? " AND city LIKE ?" : " WHERE (city LIKE ?)";
-            String searchPattern = "%" + request.getCity().get() + "%";
+            String searchPattern = "%" + request.getCity() + "%";
             parameters.add(searchPattern);
         }
 
-        if (request.getStreet().isPresent()) {
+        if (request.getStreet() != null) {
             Boolean whereExist = sql.contains("WHERE");
             sql += whereExist ? " AND street LIKE ?" : " WHERE (street LIKE ?)";
-            String searchPattern = "%" + request.getStreet().get() + "%";
+            String searchPattern = "%" + request.getStreet() + "%";
             parameters.add(searchPattern);
         }
 

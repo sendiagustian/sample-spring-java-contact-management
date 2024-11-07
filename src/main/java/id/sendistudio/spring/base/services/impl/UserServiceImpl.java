@@ -1,7 +1,6 @@
 package id.sendistudio.spring.base.services.impl;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -46,10 +45,10 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(readOnly = true)
     @Cacheable(value = "userCache", key = "#username", unless = "#result == null or #result.status != 200")
-    public WebResponse gets(Optional<String> username) {
+    public WebResponse gets(String username) {
         try {
-            if (username.isPresent() && !username.get().isEmpty()) {
-                UserView result = userRepository.getByUsername(username.get()).orElse(null);
+            if (username != null && !username.isEmpty()) {
+                UserView result = userRepository.getByUsername(username).orElse(null);
 
                 if (result == null) {
                     return new ErrorResponse(404, "User not found");

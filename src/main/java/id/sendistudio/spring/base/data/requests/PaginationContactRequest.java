@@ -1,7 +1,6 @@
 package id.sendistudio.spring.base.data.requests;
 
-import java.util.Optional;
-
+import io.micrometer.common.lang.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,10 +9,18 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PaginationContactRequest {
-    private Optional<String> name;
-    private Optional<String> email;
-    private Optional<String> phone;
+    @Nullable
+    private String name;
 
+    @Nullable
+    private String email;
+
+    @Nullable
+    private String phone;
+
+    @Nullable
     private Integer page;
+
+    @Nullable
     private Integer size;
 }

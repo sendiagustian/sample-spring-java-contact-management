@@ -31,14 +31,14 @@ public class ContactRepository {
         return response > 0;
     }
 
-    public List<ContactView> gets(Optional<String> name) {
+    public List<ContactView> gets(String name) {
         String sql = "SELECT * FROM tbContacts";
 
         List<Object> parameters = new ArrayList<>();
 
-        if (name.isPresent()) {
+        if (name != null) {
             sql += " WHERE firstName LIKE ? OR lastName LIKE ?";
-            String searchPattern = "%" + name.get() + "%";
+            String searchPattern = "%" + name + "%";
             parameters.add(searchPattern);
             parameters.add(searchPattern);
         }
@@ -50,26 +50,26 @@ public class ContactRepository {
         String sql = "SELECT COUNT(*) as total FROM tbContacts";
         List<Object> parameters = new ArrayList<>();
 
-        if (request.getName().isPresent()) {
+        if (request.getName() != null) {
             Boolean whereExist = sql.contains("WHERE");
             sql += whereExist ? " AND (firstName LIKE ? OR lastName LIKE ?)"
                     : " WHERE (firstName LIKE ? OR lastName LIKE ?)";
-            String searchPattern = "%" + request.getName().get() + "%";
+            String searchPattern = "%" + request.getName() + "%";
             parameters.add(searchPattern);
             parameters.add(searchPattern);
         }
 
-        if (request.getEmail().isPresent()) {
+        if (request.getEmail() != null) {
             Boolean whereExist = sql.contains("WHERE");
             sql += whereExist ? " AND (email LIKE ?)" : " WHERE (email LIKE ?)";
-            String searchPattern = "%" + request.getEmail().get() + "%";
+            String searchPattern = "%" + request.getEmail() + "%";
             parameters.add(searchPattern);
         }
 
-        if (request.getPhone().isPresent()) {
+        if (request.getPhone() != null) {
             Boolean whereExist = sql.contains("WHERE");
             sql += whereExist ? " AND phone LIKE ?" : " WHERE (phone LIKE ?)";
-            String searchPattern = "%" + request.getPhone().get() + "%";
+            String searchPattern = "%" + request.getPhone() + "%";
             parameters.add(searchPattern);
         }
 
@@ -82,26 +82,26 @@ public class ContactRepository {
 
         List<Object> parameters = new ArrayList<>();
 
-        if (request.getName().isPresent()) {
+        if (request.getName() != null) {
             Boolean whereExist = sql.contains("WHERE");
             sql += whereExist ? " AND (firstName LIKE ? OR lastName LIKE ?)"
                     : " WHERE (firstName LIKE ? OR lastName LIKE ?)";
-            String searchPattern = "%" + request.getName().get() + "%";
+            String searchPattern = "%" + request.getName() + "%";
             parameters.add(searchPattern);
             parameters.add(searchPattern);
         }
 
-        if (request.getEmail().isPresent()) {
+        if (request.getEmail() != null) {
             Boolean whereExist = sql.contains("WHERE");
             sql += whereExist ? " AND (email LIKE ?)" : " WHERE (email LIKE ?)";
-            String searchPattern = "%" + request.getEmail().get() + "%";
+            String searchPattern = "%" + request.getEmail() + "%";
             parameters.add(searchPattern);
         }
 
-        if (request.getPhone().isPresent()) {
+        if (request.getPhone() != null) {
             Boolean whereExist = sql.contains("WHERE");
             sql += whereExist ? " AND phone LIKE ?" : " WHERE (phone LIKE ?)";
-            String searchPattern = "%" + request.getPhone().get() + "%";
+            String searchPattern = "%" + request.getPhone() + "%";
             parameters.add(searchPattern);
         }
 

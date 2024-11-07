@@ -13,10 +13,10 @@ import org.springframework.test.context.ActiveProfiles;
 import id.sendistudio.spring.base.app.configs.properties.DatabaseProperties;
 import id.sendistudio.spring.base.app.utils.EncryptUtil;
 
-@SpringBootTest
 // @ActiveProfiles("local")
 @ActiveProfiles("dev")
 // @ActiveProfiles("prod")
+@SpringBootTest(classes = EncriptDatabaseTest.TestApplication.class)
 public class EncriptDatabaseTest {
 
     @MockBean

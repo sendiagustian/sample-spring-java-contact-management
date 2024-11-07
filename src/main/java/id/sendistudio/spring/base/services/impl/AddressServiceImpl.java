@@ -1,7 +1,6 @@
 package id.sendistudio.spring.base.services.impl;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -73,21 +72,15 @@ public class AddressServiceImpl implements AddressService {
     @Override
     @Transactional(readOnly = true)
     @Cacheable(value = "addressCache", unless = "#result == null or #result.status != 200")
-    public WebResponse gets(
-            Optional<String> uid,
-            Optional<String> country,
-            Optional<String> province,
-            Optional<String> city,
-            Optional<String> street) {
+    public WebResponse gets(String uid, String country, String province, String city, String street) {
 
         try {
 
-            if (uid.isPresent()
-                    && (country.isPresent() || province.isPresent() || city.isPresent() || street.isPresent())) {
+            if (uid != null && (country != null || province != null || city != null || street != null)) {
                 return new ErrorResponse(400, "Invalid request can't use uid with other parameter");
             } else {
-                if (uid.isPresent()) {
-                    AddressView result = addressRepository.getByUid(uid.get()).orElse(null);
+                if (uid != null) {
+                    AddressView result = addressRepository.getByUid(uid).orElse(null);
 
                     if (result == null) {
                         return new ErrorResponse(404, "Address not found");
