@@ -14,7 +14,9 @@ import org.springframework.test.context.ActiveProfiles;
 import id.sendistudio.spring.base.app.configs.properties.AppProperties;
 import id.sendistudio.spring.base.app.configs.properties.DatabaseProperties;
 import id.sendistudio.spring.base.app.configs.properties.ServerProperties;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @ActiveProfiles("local")
 @SpringBootTest(classes = DatabasePropertiesTest.TestApplication.class)
 public class DatabasePropertiesTest {
